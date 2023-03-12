@@ -1,0 +1,14 @@
+version: '3.8'
+# quarkus.datasource.jdbc.url=jdbc:postgresql://localhost:5432/samplechat
+services:
+  postgresdb:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=samplechat
+      - POSTGRES_PASSWORD=tahcelpmas
+      - POSTGRES_DB=samplechat
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./pgdb:/var/lib/postgresql/data

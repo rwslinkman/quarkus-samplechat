@@ -11,6 +11,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+import java.net.URI;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,13 +57,24 @@ public class UserWebResource {
         if(StringUtils.isEmpty(password)) {
             formErrors.add("Please provide a password");
         }
+        if(!formErrors.isEmpty()) {
+            return Response
+                    .ok()
+                    .entity(UserWebResource.Templates.createUserPage(username, password, formErrors))
+                    .build();
+        }
 
         List<String> creationErrors = userProfileService.createUserWithResult(username, password);
         if(creationErrors.isEmpty()) {
-            return Response.status(Response.Status.FOUND).location(uriInfo.getBaseUri()).build();
+            return Response
+                    .status(Response.Status.FOUND)
+                    .location(uriInfo.getBaseUri())
+                    .build();
         } else {
-            formErrors.addAll(creationErrors);
-            return Response.ok().entity(UserWebResource.Templates.createUserPage(username, password, formErrors)).build();
+            return Response
+                    .ok()
+                    .entity(UserWebResource.Templates.createUserPage(username, password, creationErrors))
+                    .build();
         }
     }
 
@@ -81,12 +93,27 @@ public class UserWebResource {
     }
 
     @GET
-    @PermitAll
+    @RolesAllowed({"user", "admin", "superadmin"})
     @Path("/logout")
     @Produces(MediaType.MEDIA_TYPE_WILDCARD)
     @Consumes(MediaType.WILDCARD)
     public Response forceLogout() {
         // Forcefully return HTTP 401 so result of XMLHttpRequest will clear browser's credential cache
         return Response.status(Response.Status.UNAUTHORIZED).build();
+    }
+
+    @GET
+    @Path("/profile/gentkn")
+    @RolesAllowed({"user", "admin", "superadmin"})
+    @Produces(MediaType.MEDIA_TYPE_WILDCARD)
+    @Consumes(MediaType.WILDCARD)
+    public Response regenerateUserChatToken(@Context SecurityContext securityContext) {
+        Principal userPrincipal = securityContext.getUserPrincipal();
+        String username = userPrincipal.getName();
+
+        userProfileService.updateUserChatToken(username);
+
+        URI redirect = uriInfo.getBaseUriBuilder().path("/users/profile").build();
+        return Response.status(Response.Status.FOUND).location(redirect).build();
     }
 }

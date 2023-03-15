@@ -1,7 +1,9 @@
 package nl.rwslinkman.samplechat.service;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.panache.common.Parameters;
 import nl.rwslinkman.samplechat.data.UserProfile;
+import nl.rwslinkman.samplechat.util.StringUtils;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
@@ -38,5 +40,14 @@ public class UserProfileService {
             UserProfile.add(providedUsername, providedPassword, "user");
         }
         return errorList;
+    }
+
+    @Transactional
+    public void updateUserChatToken(String username) {
+        UserProfile profile = UserProfile
+                .find("username", username)
+                .firstResult();
+        profile.chatToken = BcryptUtil.bcryptHash(StringUtils.generateRandom(16));
+        profile.persist();
     }
 }

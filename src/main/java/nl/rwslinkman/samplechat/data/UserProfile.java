@@ -16,6 +16,9 @@ public class UserProfile extends PanacheEntity {
     public String password;
     @Roles
     public String role;
+    // Used in the chat API in a custom header
+    public String chatToken;
+
 
     /**
      * Adds a new user to the database
@@ -28,6 +31,7 @@ public class UserProfile extends PanacheEntity {
         user.username = username;
         user.password = password;
         user.role = role;
+        user.chatToken = "";
         user.persist();
     }
 }

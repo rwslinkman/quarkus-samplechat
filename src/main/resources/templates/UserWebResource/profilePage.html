@@ -35,6 +35,10 @@ function logout() {
             <code>{loggedInUser.password}</code><br/>
             <b>Role:</b><br/>
             <code>{loggedInUser.role}</code><br/>
+            <b>Chat Authentication Token:</b><br/>
+            <code>{loggedInUser.chatToken}</code> - <a href="/users/profile/gentkn">Generate</a><br/>
+            <br/>
+            <hr/>
             <a onclick="logout()">Logout</a>
         </p>
     </div>

@@ -12,6 +12,21 @@
 <div class="grid">
     <div class="left-column">
         <h1>Leave personal details here</h1>
+        We will make sure to leak them.<br/>
+        <ul>
+            {#for element in formErrors}
+            <li><code>{element}</code></li>
+            {/for}
+        </ul
+        <br/>
+        <form action="/users/create" method="post"/>
+            <b>Username:</b><br/>
+            <input type="text" name="register_username" value="{placeholderUsername}"><br/>
+            <b>Password:</b><br/>
+            <input type="text" name="register_password" value="{placeholderPassword}"><br/>
+            <br/>
+            <input type="submit" value="To infinity and beyond!">
+        </form>
     </div>
 </div>
 {/contentSection}

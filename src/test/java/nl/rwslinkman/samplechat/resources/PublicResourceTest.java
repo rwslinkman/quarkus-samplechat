@@ -9,7 +9,7 @@ import static io.restassured.RestAssured.given;
 class PublicResourceTest {
 
     @Test
-    public void testHelloEndpoint() {
+    public void testHomepageEndpoint() {
         given()
                 .when().get("/")
                 .then()

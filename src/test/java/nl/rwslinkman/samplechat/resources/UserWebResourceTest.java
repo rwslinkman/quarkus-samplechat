@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.core.Is.is;
 
 @QuarkusTest
 class UserWebResourceTest {
@@ -37,12 +36,12 @@ class UserWebResourceTest {
     }
 
     @Test
-    void shouldNotAccessUserWhenAdminAuthenticated() {
+    void shouldNotAccessUserWhenUnknownAuthenticated() {
         given()
-                .auth().preemptive().basic("user", "user")
+                .auth().preemptive().basic("unknown", "unknown")
                 .when()
                 .get("/users/profile")
                 .then()
-                .statusCode(HttpStatus.SC_FORBIDDEN);
+                .statusCode(HttpStatus.SC_UNAUTHORIZED);
     }
 }

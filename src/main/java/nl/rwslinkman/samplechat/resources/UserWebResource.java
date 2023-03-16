@@ -5,6 +5,8 @@ import io.quarkus.qute.TemplateInstance;
 import nl.rwslinkman.samplechat.data.UserProfile;
 import nl.rwslinkman.samplechat.service.UserProfileService;
 import nl.rwslinkman.samplechat.util.StringUtils;
+import org.eclipse.microprofile.openapi.annotations.Operation;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -40,6 +42,7 @@ public class UserWebResource {
     @PermitAll
     @Produces(MediaType.TEXT_HTML)
     @Path("/create")
+    @Operation(hidden = true)
     public TemplateInstance showCreateUserForm() {
         return Templates.createUserPage("", "", Collections.emptyList());
     }
@@ -48,6 +51,7 @@ public class UserWebResource {
     @PermitAll
     @Produces(MediaType.TEXT_HTML)
     @Path("/create")
+    @Operation(hidden = true)
     public Response handleCreateUser(@FormParam("register_username") String username,
                                              @FormParam("register_password") String password) {
         List<String> formErrors = new ArrayList<>();
@@ -82,6 +86,7 @@ public class UserWebResource {
     @RolesAllowed({"user", "admin", "superadmin"})
     @Produces(MediaType.TEXT_HTML)
     @Path("/profile")
+    @Operation(hidden = true)
     public TemplateInstance showProfilePage(@Context SecurityContext securityContext) {
         Principal userPrincipal = securityContext.getUserPrincipal();
         String username = userPrincipal.getName();
@@ -97,6 +102,7 @@ public class UserWebResource {
     @Path("/logout")
     @Produces(MediaType.MEDIA_TYPE_WILDCARD)
     @Consumes(MediaType.WILDCARD)
+    @Operation(hidden = true)
     public Response forceLogout() {
         // Forcefully return HTTP 401 so result of XMLHttpRequest will clear browser's credential cache
         return Response.status(Response.Status.UNAUTHORIZED).build();
@@ -107,6 +113,7 @@ public class UserWebResource {
     @RolesAllowed({"user", "admin", "superadmin"})
     @Produces(MediaType.MEDIA_TYPE_WILDCARD)
     @Consumes(MediaType.WILDCARD)
+    @Operation(hidden = true)
     public Response regenerateUserChatToken(@Context SecurityContext securityContext) {
         Principal userPrincipal = securityContext.getUserPrincipal();
         String username = userPrincipal.getName();

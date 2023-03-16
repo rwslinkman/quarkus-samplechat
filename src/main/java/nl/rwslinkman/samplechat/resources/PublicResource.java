@@ -2,6 +2,7 @@ package nl.rwslinkman.samplechat.resources;
 
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.GET;
@@ -20,6 +21,7 @@ public class PublicResource {
     @GET
     @PermitAll
     @Produces(MediaType.TEXT_HTML)
+    @Operation(hidden = true)
     public TemplateInstance index() {
         return Templates.homepage();
     }

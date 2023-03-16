@@ -19,7 +19,7 @@ public class ChatChannel extends PanacheEntity {
     @JsonManagedReference
     public List<UserProfile> members;
 
-    @OneToMany
+    @OneToMany(mappedBy = "recipient", cascade = CascadeType.REMOVE)
     @JsonManagedReference
     public List<ChatMessage> messages;
 

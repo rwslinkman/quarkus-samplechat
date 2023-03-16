@@ -3,6 +3,7 @@ package nl.rwslinkman.samplechat.data;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -18,7 +19,7 @@ public class ChatMessage extends PanacheEntity {
     @ManyToOne
     public UserProfile sender;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JsonBackReference
     public ChatChannel recipient;
 

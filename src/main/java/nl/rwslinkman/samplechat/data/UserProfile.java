@@ -7,13 +7,14 @@ import io.quarkus.security.jpa.*;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "user_profile")
 @UserDefinition
-public class UserProfile extends PanacheEntity {
+public class UserProfile extends PanacheEntity implements Principal {
     @Username
     public String username;
     @Password(PasswordType.CLEAR)
@@ -44,5 +45,10 @@ public class UserProfile extends PanacheEntity {
         user.chatToken = "n/a";
         user.persist();
         return user;
+    }
+
+    @Override
+    public String getName() {
+        return username;
     }
 }

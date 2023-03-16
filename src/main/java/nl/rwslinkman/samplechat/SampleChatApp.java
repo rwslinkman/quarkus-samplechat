@@ -14,8 +14,9 @@ public class SampleChatApp {
 
     @Transactional
     public void loadUsers(@Observes StartupEvent evt) {
-        // sample channels
+        ChatMessage.deleteAll();
         ChatChannel.deleteAll();
+        // sample channel
         ChatChannel main = ChatChannel.create("main", "The main channel of this SampleChat server");
 
         // reset and load all test users

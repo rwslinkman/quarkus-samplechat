@@ -6,7 +6,6 @@ import nl.rwslinkman.samplechat.data.UserProfile;
 import nl.rwslinkman.samplechat.service.UserProfileService;
 import nl.rwslinkman.samplechat.util.StringUtils;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -31,10 +30,11 @@ public class UserWebResource {
     @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance createUserPage(
-            String placeholderUsername,
-            String placeholderPassword,
-            List<String> formErrors
+                String placeholderUsername,
+                String placeholderPassword,
+                List<String> formErrors
         );
+
         public static native TemplateInstance profilePage(UserProfile loggedInUser);
     }
 
@@ -53,15 +53,15 @@ public class UserWebResource {
     @Path("/create")
     @Operation(hidden = true)
     public Response handleCreateUser(@FormParam("register_username") String username,
-                                             @FormParam("register_password") String password) {
+                                     @FormParam("register_password") String password) {
         List<String> formErrors = new ArrayList<>();
-        if(StringUtils.isEmpty(username)) {
+        if (StringUtils.isEmpty(username)) {
             formErrors.add("Please provide a username");
         }
-        if(StringUtils.isEmpty(password)) {
+        if (StringUtils.isEmpty(password)) {
             formErrors.add("Please provide a password");
         }
-        if(!formErrors.isEmpty()) {
+        if (!formErrors.isEmpty()) {
             return Response
                     .ok()
                     .entity(UserWebResource.Templates.createUserPage(username, password, formErrors))
@@ -69,7 +69,7 @@ public class UserWebResource {
         }
 
         List<String> creationErrors = userProfileService.createUserWithResult(username, password);
-        if(creationErrors.isEmpty()) {
+        if (creationErrors.isEmpty()) {
             return Response
                     .status(Response.Status.FOUND)
                     .location(uriInfo.getBaseUri())

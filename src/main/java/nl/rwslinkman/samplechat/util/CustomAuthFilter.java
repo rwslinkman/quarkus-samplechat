@@ -1,16 +1,17 @@
- package nl.rwslinkman.samplechat.util;
+package nl.rwslinkman.samplechat.util;
 
- import nl.rwslinkman.samplechat.data.UserProfile;
+import nl.rwslinkman.samplechat.data.UserProfile;
 
- import javax.ws.rs.container.ContainerRequestContext;
- import javax.ws.rs.container.ContainerRequestFilter;
- import javax.ws.rs.container.PreMatching;
- import javax.ws.rs.core.Response;
- import javax.ws.rs.core.SecurityContext;
- import javax.ws.rs.ext.Provider;
- import java.io.IOException;
- import java.security.Principal;
- import java.util.Optional;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.ext.Provider;
+import java.security.Principal;
+import java.util.Optional;
+
+import static javax.ws.rs.core.Response.Status.FORBIDDEN;
+import static javax.ws.rs.core.Response.status;
 
 @Provider
 @PreMatching
@@ -19,20 +20,20 @@ public class CustomAuthFilter implements ContainerRequestFilter {
     public static final String AUTH_TOKEN_HEADER_KEY = "X-SampleChat-Auth";
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
-        if(requestContext.getUriInfo().getPath().startsWith("/api")) {
+    public void filter(ContainerRequestContext requestContext) {
+        if (requestContext.getUriInfo().getPath().startsWith("/api")) {
 
             String chatToken = requestContext.getHeaders().getFirst(AUTH_TOKEN_HEADER_KEY);
-            if(StringUtils.isEmpty(chatToken)) {
+            if (StringUtils.isEmpty(chatToken)) {
                 // No token passed in headers
-                requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).build());
+                requestContext.abortWith(status(FORBIDDEN).build());
                 return;
             }
 
             Optional<UserProfile> authUser = UserProfile.find("chatToken", chatToken).firstResultOptional();
-            if(authUser.isEmpty()) {
+            if (authUser.isEmpty()) {
                 // No user found with given token
-                requestContext.abortWith(Response.status(Response.Status.FORBIDDEN).build());
+                requestContext.abortWith(status(FORBIDDEN).build());
                 return;
             }
 

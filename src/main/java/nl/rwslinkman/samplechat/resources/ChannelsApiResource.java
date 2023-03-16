@@ -4,13 +4,12 @@ import io.quarkus.logging.Log;
 import nl.rwslinkman.samplechat.data.ChatChannel;
 import nl.rwslinkman.samplechat.data.UserProfile;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 import java.util.Optional;
@@ -34,5 +33,16 @@ public class ChannelsApiResource {
 
         Optional<ChatChannel> foundChannel = ChatChannel.find("name", name).firstResultOptional();
         return foundChannel.orElse(null);
+    }
+
+    @POST
+    @Path("/{name}")
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postChannelMessage(@Context SecurityContext securityContext, @PathParam("name") String channelName) {
+        UserProfile userPrincipal = (UserProfile) securityContext.getUserPrincipal();
+        Log.info("Request made by " + userPrincipal.username);
+        // TODO accept JSON body and store in ChatMessage entity
+        return null;
     }
 }
